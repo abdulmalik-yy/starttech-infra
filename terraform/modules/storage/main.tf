@@ -1,7 +1,7 @@
 resource "aws_s3_bucket" "frontend_bucket" {
-  bucket = "starttech-frontend-bucket"
+  bucket = "aws_s3_bucket-123"
   tags = {
-    Name = "frontend"
+    Name = "aws_s3_bucket-123"
   }
 }
 
@@ -92,7 +92,7 @@ resource "aws_elasticache_subnet_group" "redis" {
 resource "aws_elasticache_cluster" "redis" {
   cluster_id           = "redis"
   engine               = "redis"
-  node_type            = "cache.t2.micro"
+  node_type            = "cache.t3.micro"
   num_cache_nodes      = 1
   port                 = 6379
   subnet_group_name    = aws_elasticache_subnet_group.redis.name

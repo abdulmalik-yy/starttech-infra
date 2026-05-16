@@ -20,7 +20,7 @@ resource "aws_security_group" "ec2_sg" {
 
 resource "aws_launch_template" "backend" {
   name          = "backend"
-  image_id      = var.ami
+  image_id      = "ami-0440d3b780d96b29d"
   instance_type = "t3.micro"
 
   iam_instance_profile {
@@ -69,6 +69,7 @@ resource "aws_lb" "app_lb" {
   load_balancer_type = "application"
   subnets            = var.public_subnet
   security_groups    = [aws_security_group.lb_sg.id]
+  subnets            = [var.public_subnet_1_id, var.public_subnet_2_id]
 }
 
 resource "aws_lb_target_group" "backend_tg" {
