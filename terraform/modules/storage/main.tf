@@ -6,6 +6,8 @@ resource "aws_s3_bucket" "frontend_bucket" {
 }
 
 resource "aws_s3_bucket_website_configuration" "frontend" {
+
+  depends_on = [aws_s3_bucket.frontend_bucket]
   bucket = aws_s3_bucket.frontend_bucket.id
 
   index_document {
