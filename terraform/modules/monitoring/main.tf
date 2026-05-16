@@ -1,9 +1,15 @@
+resource "random_string" "suffix" {
+  length  = 6
+  special = false
+  upper   = false
+}
+
 resource "aws_cloudwatch_log_group" "main" {
-  name = "starttech-log-group"
+  name = "starttech-log-group-${random_string.suffix.result}"
 }
 
 resource "aws_iam_role" "ec2_role" {
-  name = "ec2-role"
+  name = "ec2-role-${random_string.suffix.result}"
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
@@ -29,6 +35,6 @@ resource "aws_iam_role_policy_attachment" "ecr_attach" {
 }
 
 resource "aws_iam_instance_profile" "ec2_profile" {
-  name = "starttech-ec2-profile"
+  name = "starttech-ec2-profile-${random_string.suffix.result}"
   role = aws_iam_role.ec2_role.name
 }

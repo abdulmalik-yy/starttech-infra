@@ -8,8 +8,14 @@ data "aws_ami" "amazon_linux_2" {
   }
 }
 
+resource "random_string" "suffix" {
+  length  = 6
+  special = false
+  upper   = false
+}
+
 resource "aws_security_group" "ec2_sg" {
-  name        = "ec2_sg"
+  name        = "ec2_sg_${random_string.suffix.result}"
   description = "Security group for EC2 instances"
   vpc_id      = var.vpc_id
 
@@ -29,7 +35,7 @@ resource "aws_security_group" "ec2_sg" {
 }
 
 resource "aws_launch_template" "backend" {
-  name          = "backend"
+  name          = "backend-${random_string.suffix.result}"
   image_id      = data.aws_ami.amazon_linux_2.id
   instance_type = "t3.micro"
 
@@ -41,7 +47,7 @@ resource "aws_launch_template" "backend" {
 }
 
 resource "aws_autoscaling_group" "asg" {
-  name                = "asg"
+  name                = "asg-${random_string.suffix.result}"
   min_size            = 2
   max_size            = 4
   desired_capacity    = 2
@@ -55,7 +61,7 @@ resource "aws_autoscaling_group" "asg" {
 }
 
 resource "aws_security_group" "lb_sg" {
-  name        = "lb_sg"
+  name        = "lb_sg_${random_string.suffix.result}"
   description = "Security group for Load Balancer"
   vpc_id      = var.vpc_id
 
@@ -75,14 +81,14 @@ resource "aws_security_group" "lb_sg" {
 }
 
 resource "aws_lb" "app_lb" {
-  name               = "app-lb"
+  name               = "app-lb-${random_string.suffix.result}"
   load_balancer_type = "application"
   subnets            = var.public_subnet
   security_groups    = [aws_security_group.lb_sg.id]
 }
 
 resource "aws_lb_target_group" "backend_tg" {
-  name     = "backend-tg"
+  name     = "backend-tg-${random_string.suffix.result}"
   port     = 8080
   protocol = "HTTP"
   vpc_id   = var.vpc_id
@@ -114,7 +120,7 @@ resource "aws_autoscaling_policy" "scale_up" {
 }
 
 resource "aws_cloudwatch_metric_alarm" "high_cpu" {
-  alarm_name          = "high-cpu"
+  alarm_name          = "high-cpu-${random_string.suffix.result}"
   comparison_operator = "GreaterThanOrEqualToThreshold"
   evaluation_periods  = "2"
   metric_name         = "CPUUtilization"
@@ -138,7 +144,7 @@ resource "aws_autoscaling_policy" "scale_down" {
 }
 
 resource "aws_cloudwatch_metric_alarm" "low_cpu" {
-  alarm_name          = "low-cpu"
+  alarm_name          = "low-cpu-${random_string.suffix.result}"
   comparison_operator = "LessThanOrEqualToThreshold"
   evaluation_periods  = "2"
   metric_name         = "CPUUtilization"

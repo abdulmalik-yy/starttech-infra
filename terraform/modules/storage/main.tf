@@ -5,7 +5,7 @@ resource "random_string" "suffix" {
 }
 
 resource "aws_s3_bucket" "frontend_bucket" {
-  bucket = "aws_s3_bucket-123"
+  bucket = "starttech-frontend-bucket-${random_string.suffix.result}"
   tags = {
     Name = "frontend"
   }
@@ -90,13 +90,13 @@ resource "aws_cloudfront_distribution" "cdn" {
 } 
   
 resource "aws_elasticache_subnet_group" "redis" {
-  name       = "redis-subnet-group"
+  name       = "redis-subnet-group-${random_string.suffix.result}"
   subnet_ids = var.private_subnet
 } 
 
 
 resource "aws_elasticache_cluster" "redis" {
-  cluster_id           = "redis"
+  cluster_id           = "redis-${random_string.suffix.result}"
   engine               = "redis"
   node_type            = "cache.t3.micro"
   num_cache_nodes      = 1
@@ -106,7 +106,7 @@ resource "aws_elasticache_cluster" "redis" {
 }
 
 resource "aws_security_group" "redis_sg" {
-  name        = "redis_sg"
+  name        = "redis_sg_${random_string.suffix.result}"
   description = "Security group for Redis cluster"
   vpc_id      = var.vpc_id
 
