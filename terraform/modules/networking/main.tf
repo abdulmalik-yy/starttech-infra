@@ -7,22 +7,31 @@ resource "aws_vpc" "main" {
   }
 }
 
+data "aws_availability_zones" "available" {
+  state = "available"
+}
+
 # -- Subnets --
 resource "aws_subnet" "public" {
-  vpc_id     = aws_vpc.main.id
-  cidr_block = "10.0.1.0/24"
+  count             = 2
+  vpc_id            = aws_vpc.main.id
+  cidr_block        = "10.0.${count.index + 1}.0/24"
+  availability_zone = data.aws_availability_zones.available.names[count.index]
+  map_public_ip_on_launch = true
 
   tags = {
-    Name = "public"
+    Name = "public-${count.index + 1}"
   }
 }
 
 resource "aws_subnet" "private" {
-  vpc_id     = aws_vpc.main.id
-  cidr_block = "10.0.2.0/24"
+  count             = 2
+  vpc_id            = aws_vpc.main.id
+  cidr_block        = "10.0.${count.index + 10}.0/24"
+  availability_zone = data.aws_availability_zones.available.names[count.index]
 
   tags = {
-    Name = "private"
+    Name = "private-${count.index + 1}"
   }
 }
 
@@ -51,6 +60,7 @@ resource "aws_route_table" "public" {
 
 # -- Route Table Association --
 resource "aws_route_table_association" "public" {
-  subnet_id      = aws_subnet.public.id
+  count          = 2
+  subnet_id      = aws_subnet.public[count.index].id
   route_table_id = aws_route_table.public.id
 }

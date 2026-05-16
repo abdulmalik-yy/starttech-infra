@@ -1,13 +1,17 @@
+resource "random_string" "suffix" {
+  length  = 6
+  special = false
+  upper   = false
+}
+
 resource "aws_s3_bucket" "frontend_bucket" {
   bucket = "aws_s3_bucket-123"
   tags = {
-    Name = "aws_s3_bucket-123"
+    Name = "frontend"
   }
 }
 
 resource "aws_s3_bucket_website_configuration" "frontend" {
-
-  depends_on = [aws_s3_bucket.frontend_bucket]
   bucket = aws_s3_bucket.frontend_bucket.id
 
   index_document {
