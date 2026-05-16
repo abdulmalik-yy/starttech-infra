@@ -1,0 +1,16 @@
+# Find errors in application logs
+fields @timestamp, @message, @logStream, @log
+| filter @message like /(?i)(error|exception|fail)/
+| sort @timestamp desc
+| limit 20
+
+# Count HTTP 500 status codes
+fields @timestamp, @message
+| filter @message like /HTTP.*500/
+| stats count(*) as error_count by bin(5m)
+
+# Find slowest requests
+fields @timestamp, @message, request_time
+| filter ispresent(request_time)
+| sort request_time desc
+| limit 20

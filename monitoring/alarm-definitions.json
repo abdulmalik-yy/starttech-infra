@@ -1,0 +1,38 @@
+{
+  "Alarms": [
+    {
+      "AlarmName": "BackendHighCPU",
+      "AlarmDescription": "Triggers if CPU utilization > 80% for 2 periods",
+      "MetricName": "CPUUtilization",
+      "Namespace": "AWS/EC2",
+      "Statistic": "Average",
+      "Dimensions": [
+        {
+          "Name": "AutoScalingGroupName",
+          "Value": "asg"
+        }
+      ],
+      "Period": 300,
+      "EvaluationPeriods": 2,
+      "Threshold": 80,
+      "ComparisonOperator": "GreaterThanThreshold"
+    },
+    {
+      "AlarmName": "Backend5xxErrors",
+      "AlarmDescription": "Triggers on multiple 5xx errors from ALB",
+      "MetricName": "HTTPCode_Target_5XX_Count",
+      "Namespace": "AWS/ApplicationELB",
+      "Statistic": "Sum",
+      "Dimensions": [
+        {
+          "Name": "LoadBalancer",
+          "Value": "app/app-lb"
+        }
+      ],
+      "Period": 300,
+      "EvaluationPeriods": 1,
+      "Threshold": 5,
+      "ComparisonOperator": "GreaterThanThreshold"
+    }
+  ]
+}
