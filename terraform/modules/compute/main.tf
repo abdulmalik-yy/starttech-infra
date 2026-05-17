@@ -14,6 +14,15 @@ resource "random_string" "suffix" {
   upper   = false
 }
 
+resource "aws_ecr_repository" "backend" {
+  name                 = "starttech-backend-${random_string.suffix.result}"
+  image_tag_mutability = "MUTABLE"
+
+  image_scanning_configuration {
+    scan_on_push = true
+  }
+}
+
 resource "aws_security_group" "ec2_sg" {
   name        = "ec2_sg_${random_string.suffix.result}"
   description = "Security group for EC2 instances"
