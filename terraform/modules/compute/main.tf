@@ -67,6 +67,12 @@ resource "aws_autoscaling_group" "asg" {
     id      = aws_launch_template.backend.id
     version = "$Latest"
   }
+
+  tag {
+    key                 = "Name"
+    value               = "asg"
+    propagate_at_launch = true
+  }
 }
 
 resource "aws_security_group" "lb_sg" {
